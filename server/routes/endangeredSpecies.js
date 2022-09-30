@@ -1,7 +1,9 @@
 import express from "express";
-var router = express.Router();
+import router from "express";
 import cors from "cors";
+import db from "../db_folder/db.js";
 const app = express();
+const router = Router();
 app.use(cors());
 
 let mockSpecies = [
@@ -10,6 +12,15 @@ let mockSpecies = [
   { id: 5, common_name: "turtle", scientific_name: "Testudines", number_living_in_wild: "1000000", conservation_status_code: "G4", record_creation: current_date},
 ];
 
+router.get("/", async (req, res) => {
+  console.log("TRYING")
+  try {
+    const species = await db.any("SELECT * FROM species ORDER BY id", [true]);
+    res.send(species);
+  } catch (e) {
+    return res.status(400).json({ e });
+  }
+});
 //updates my database on the response end
 router.post("/", (req, res) => {
   const animal = {
