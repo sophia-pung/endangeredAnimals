@@ -2,13 +2,15 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { useReducer } from "react";
 import "./Species.css";
+import AddSpecies from "./addSpecies.jsx"
+
 //import app from "../../../server/app.mjs";
 
 //hardcoded objects into array
 let mockSpecies = [
   {
     id: 3,
-    common_name: "hippp",
+    common_name: "hippo",
     scientific_name: "Hippopotamus amphibius",
     number_living_in_wild: "200000",
     conservation_status_code: "G5",
@@ -33,16 +35,17 @@ let mockSpecies = [
 ];
 
 const Species = () => {
-  const [speciesList, setSpecieslList] = useState([]);
+  const [speciesList, setSpeciesList] = useState([]);
+  const [editedSpecieId, setEditedSpecieId] = useState(null);
 
-  console.log("species", speciesList);
 
   const getSpecies = () => {
-    fetch("http://localhost:4000/endangeredSpecies.js")
+    fetch("http://localhost:8080/species/")
       .then((res) => res.json())
       .then((res) => setSpeciesList(res.species));
   };
 
+console.log("speciesHERE", speciesList);
   //   const postUsers = () => {
   //     fetch("http://localhost:4000/users", {
   //       method: "POST",
@@ -77,9 +80,21 @@ const Species = () => {
     record_creation: "",
   };
 
-  //adding new species to the species list
-  const [speciestList, setSpeciesList] = useState([]);
-  console.log("speciesList", speciesList);
+  const dataFromAddSpecies = (childData) => {
+    console.log("callback function", childData);
+    // newEditedStudents(childData);
+    const newArraySpecies = [];
+    for (let specie of species) {
+      if (specie.id === childData.id) {
+        newArraySpecies.push(childData);
+      } else {
+        newArraySpecies.push(specie);
+      }
+    } 
+    setEditedSpecieId(null);
+    setSpecies(newArraySpecies);
+    console.log("NEWARRAYOFSTUDENTS", newArraySpecies);
+  };
 
   // id, name, and email are states that store what values the user types in those fields
   // users is an array of user objects
@@ -159,6 +174,13 @@ const Species = () => {
     dispatch({ type: "clear" });
     //call dispatch insted > setNewEvent({ name: newEvent.name });
     //add newUser to users list, by unwrapping user array and adding a new user to it
+  };
+
+
+  const showForm = (specie) => {
+    console.log("TESTTT", specie.id);
+    const editedId = specie.id;
+    setEditedSpecieId(editedId);
   };
   // const handleDelete = () => {
   //   console.log("handleDeleteId", deleteId) // <-- with reducer, `id` is part of `state`
@@ -241,6 +263,41 @@ const Species = () => {
               }
             />
           </fieldset>
+          <ul>
+        {/* makes it so that you can only edit one student at of a time */}
+        {species.map((specie) => {
+          console.log("SPECIE", specie)
+          if (editedSpecieId === specie.id) {
+            //display editable version of the line
+            return (
+              <AddSpecies
+                initialSpecie={specie}
+                coolProp="coolPropText"
+                dataToStudent={dataFromAddSpecies}
+              />
+            );
+          } else {
+            return (
+              <div>
+                {/* <div>student name: {student.firstname}</div> */}
+                <li key={specie.id}>
+                  {" "}
+                  {specie.common_name}{" "}
+                  <button
+                    id={specie.id}
+                    type="button"
+                    onClick={() => {
+                      showForm(specie);
+                    }}
+                  >
+                    EDIT
+                  </button>
+                </li>
+              </div>
+            );
+          }
+        })}
+      </ul>
           {/* <fieldset>
             <label>Date</label>
             <input

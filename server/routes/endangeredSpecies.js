@@ -1,15 +1,14 @@
 import express from "express";
-import router from "express";
 import cors from "cors";
 import db from "../db_folder/db.js";
 const app = express();
-const router = Router();
+const router = express.Router();
 app.use(cors());
 
 let mockSpecies = [
-  { id: 3, common_name: "hippp", scientific_name: "Hippopotamus amphibius", number_living_in_wild: "200000", conservation_status_code: "G5", record_creation: current_date},
-  { id: 4, common_name: "goldfish", scientific_name: "Carassius auratus", number_living_in_wild: "10000000", conservation_status_code: "G5", record_creation: current_date},
-  { id: 5, common_name: "turtle", scientific_name: "Testudines", number_living_in_wild: "1000000", conservation_status_code: "G4", record_creation: current_date},
+  { id: 3, common_name: "hippp", scientific_name: "Hippopotamus amphibius", number_living_in_wild: "200000", conservation_status_code: "G5", record_creation: "09/30/22"},
+  { id: 4, common_name: "goldfish", scientific_name: "Carassius auratus", number_living_in_wild: "10000000", conservation_status_code: "G5", record_creation: "09/30/22"},
+  { id: 5, common_name: "turtle", scientific_name: "Testudines", number_living_in_wild: "1000000", conservation_status_code: "G4", record_creation: "09/30/22"},
 ];
 
 router.get("/", async (req, res) => {
@@ -55,7 +54,7 @@ console.log("HERE");
 /* GET users listing. */
 router.get("/", function (req, res, next) {
   console.log(req.body, "the body");
-  res.json({ animals: mockAnimals });
+  res.json({ spcies: mockSpecies });
 });
 
 export default router;
